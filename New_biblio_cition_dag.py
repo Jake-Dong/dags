@@ -22,6 +22,7 @@ def bibio_citaion_DB():
             , user='root'
             , password='admin'
             , database='test'
+            , port = 3306
         )
         cur = conn.cursor()
         sql = "SELECT DISTINCT * FROM pub_num_data_{}".format(date)
