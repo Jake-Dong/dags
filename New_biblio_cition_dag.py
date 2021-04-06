@@ -10,7 +10,7 @@ from airflow.utils.dates import days_ago
 from airflow.operators.python_operator import PythonOperator
 
 def bibio_citaion_DB():
-    host_ip = '34.68.78.109'
+    host_ip = '172.29.192.1'
     biblio_all_list = []
     yesterday = datetime.today() - timedelta(7)
 
