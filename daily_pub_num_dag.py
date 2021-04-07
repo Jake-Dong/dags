@@ -51,8 +51,8 @@ def lv2_fun(Lv_1_cpc):
 
 
 def pub_num_DB():
-    ip_ad = '172.28.96.1'
-    user_id = 'airflow'
+    ip_ad = '34.68.250.64'
+    user_id = 'root'
     #  EPO 회원 key 를 받아 넣어준다 EPO 서버 트래픽 관리차원.
     client = epo_ops.Client(
         key='o2TgZqLMPnGxmiFk7rUUB0bTq9VZDbe1',
