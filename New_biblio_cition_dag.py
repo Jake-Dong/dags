@@ -52,6 +52,7 @@ def bibio_citaion_DB():
 
     client = epo_ops.Client(key='o2TgZqLMPnGxmiFk7rUUB0bTq9VZDbe1', secret='ZHYxcGxi9UprBTUD')
     for doc_num, country, kind in zip(app_doc_num_list, country_list, kind_list):
+        print(doc_num)
         try:
             response = client.published_data(
                 reference_type='publication'
