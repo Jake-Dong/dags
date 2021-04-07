@@ -998,6 +998,4 @@ task3 = PythonOperator(
     , dag=dag
 )
 
-task1.set_dowmstream(task2)
-task1.set_dowmstream(task3)
-
+task1 >> task2 , task3 
