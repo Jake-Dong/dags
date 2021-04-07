@@ -26,7 +26,7 @@ def bibio_citaion_DB():
             , connect_timeout = 3000
         )
         cur = conn.cursor()
-        sql = "SELECT DISTINCT * FROM pub_num_data_{} LIMIT10".format(date)
+        sql = "SELECT DISTINCT * FROM pub_num_data_{} LIMIT 1000".format(date)
         cur.execute(sql)
         conn.commit()
     except Exception as ex:
