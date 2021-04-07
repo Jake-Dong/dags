@@ -10,7 +10,7 @@ from airflow.utils.dates import days_ago
 from airflow.operators.python_operator import PythonOperator
 
 def bibio_citaion_DB():
-    host_ip = '34.68.78.109'
+    host_ip = '192.168.0.103'
     biblio_all_list = []
     yesterday = datetime.today() - timedelta(7)
 
@@ -23,6 +23,7 @@ def bibio_citaion_DB():
             , password='admin'
             , database='test'
             , port = 3306
+            , conect_timeout = 3000
         )
         cur = conn.cursor()
         sql = "SELECT DISTINCT * FROM pub_num_data_{}".format(date)
