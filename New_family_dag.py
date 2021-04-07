@@ -23,7 +23,7 @@ def New_familt_DB():
             , database='test'
         )
         cur = conn.cursor()
-        sql = "SELECT * FROM pub_num_data_{} LIMIT 100".format(date)
+        sql = "SELECT * FROM pub_num_data_{} LIMIT 1000".format(date)
         cur.execute(sql)
         conn.commit()
     except Exception as ex:
