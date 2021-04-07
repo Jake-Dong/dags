@@ -998,4 +998,4 @@ task3 = PythonOperator(
     , dag=dag
 )
 
-task1 >> task2 , task3 
+task1 >> task2 >> task3 
