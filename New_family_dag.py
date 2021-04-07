@@ -9,7 +9,8 @@ from airflow.models import DAG
 from airflow.utils.dates import days_ago
 from airflow.operators.python_operator import PythonOperator
 def New_familt_DB():
-    host_ip = '34.68.78.109'
+    strat = time.time()
+    host_ip = '34.68.250.64'
     yesterday = datetime.today() - timedelta(7)
 
     date = '20210324'
@@ -53,6 +54,7 @@ def New_familt_DB():
 
     for simple_family_id_one, doc_num, country_list, kind_list in zip(family_id_list, app_doc_num_list, country_list,
                                                                       kind_list):
+        print(kind_list,doc_num,country_list)
         try:
             response = client.family(
                 reference_type='publication'
@@ -144,6 +146,7 @@ def New_familt_DB():
                                        ,count_inp_family_pub_number_list
                                        ,inp_family_pub_country_set_list_join
                                        ,count_inp_family_pub_country_list])
+    print(time.time()-start)            
     try:
         conn = pymysql.connect(
             host=host_ip
