@@ -100,19 +100,23 @@ def pub_num_db():
 
     #  원하는 date list 를 time 모듈로 받고
     for date in dt_list:
-        conn = pymysql.connect(
-            host=host_ip
-            , user=user_id
-            , port=3306
-            , password='admin'
-            , database='test'
-        )
-        cur = conn.cursor()
-        sql = """CREATE TABLE test.pub_num_data_{} (family_id varchar(200),pub_country varchar(200),pub_doc_number varchar(200),pub_kind_code varchar(200));""".format(
-            date)
-        cur.execute(sql)
-        conn.commit()
-        conn.close()
+        try:
+            conn = pymysql.connect(
+                host=host_ip # 외부
+                , user='root'
+                , password='admin'
+                , database='test'
+                , port= 3306
+            )
+            cur = conn.cursor()
+            sql = """CREATE TABLE test.pub_num_data_{} (family_id varchar(200),pub_country varchar(200),pub_doc_number varchar(200),pub_kind_code varchar(200));""".format(
+                date)
+            cur.execute(sql)
+            conn.commit()
+        except Exception as ex:
+            print(ex,"DB 접속 오류.")
+        finally:
+            conn.close()
         print(cpc_lv1_list)
 
         for cql1 in cpc_lv1_list:
