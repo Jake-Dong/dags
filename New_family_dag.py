@@ -10,7 +10,7 @@ from airflow.models import DAG
 from airflow.utils.dates import days_ago
 from airflow.operators.python_operator import PythonOperator
 def New_familt_DB():
-    host_ip = '34.68.78.109'
+    host_ip = '34.68.250.64'
     yesterday = datetime.today() - timedelta(7)
 
     dt_index = pandas.date_range(start='20210201', end='20210210')
