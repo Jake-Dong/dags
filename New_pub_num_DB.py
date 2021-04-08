@@ -114,7 +114,7 @@ def pub_num_db():
             cur.execute(sql)
             conn.commit()
         except Exception as ex:
-            print(ex,"DB 접속 오류.")
+            print(ex,"DB CREATE 접속 오류.")
         finally:
             conn.close()
         print(cpc_lv1_list)
