@@ -53,7 +53,7 @@ def lv2_fun(Lv_1_cpc):
 
 def pub_num_db():
 
-    host_ip = '34.68.78.109'
+    host_ip = '34.68.250.64'
     user_id = 'root'
     #  EPO 회원 key 를 받아 넣어준다 EPO 서버 트래픽 관리차원.
     client = epo_ops.Client(
