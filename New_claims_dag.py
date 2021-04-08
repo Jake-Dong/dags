@@ -5,6 +5,7 @@ import time
 from datetime import datetime, timedelta
 import pandas
 import pymysql
+import pendulum
 from airflow.models import DAG
 from airflow.utils.dates import days_ago
 from airflow.operators.python_operator import PythonOperator
@@ -91,10 +92,10 @@ def claim_DB():
         print(ex,"DB 연결 문제")
     finally:
         conn.close()
-
+local_ta = pendulum.timezone("Asia/seoul")
 default_dag_args = {
     "owner": "airflow",
-    "start_date": datetime.today()
+    "start_date": datetime(2021,4,7,tzinfo=local_tz)
 }
 dag = DAG(
     dag_id='claim_DB'
