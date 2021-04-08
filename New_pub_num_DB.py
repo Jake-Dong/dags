@@ -70,9 +70,10 @@ def pub_num_db():
     # daet_list = list(dt_index.strftime("%Y%m%d"))
 
     yesterday = datetime.today() - timedelta(7)
+    
 
-    # date = yesterday.strftime("%Y%m%d")
-    date = '20210324'
+    date = yesterday.strftime("%Y%m%d")
+#     date = '20210324'
     #  해당 리스트는 total_result 가 2000 이하 예를들어 300 개 일때 20번의 반복문을 돌면 비효율적이기때문에 아래의 수식으로 최적의 반복문만 돌기위한 사전작업이다.
     begin_max_num_list = ['1', '100', '200', '300', '400', '500', '600', '700', '800', '900', '1000', '1100', '1200', '1300',
                      '1400', '1500', '1600', '1700', '1800', '1900']
