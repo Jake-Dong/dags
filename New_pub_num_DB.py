@@ -425,7 +425,7 @@ def pub_num_db():
                                                                             )
                                                                             cur = conn.cursor()
                                                                             for row in pub_list_lv3_country:
-                                                                                sql = """INSERT INTO pub_num_data_{} VALUES(%s,%s,%s,%s,%s);""".format(
+                                                                                sql = """INSERT INTO pub_num_data_{} VALUES(%s,%s,%s,%s);""".format(
                                                                                     date)
                                                                                 val = row
                                                                                 cur.execute(sql, val)
