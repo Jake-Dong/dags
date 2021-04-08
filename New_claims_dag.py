@@ -14,8 +14,8 @@ def claim_DB():
 
     yesterday = datetime.today() - timedelta(8)
 
-    # date = yesterday.strftime("%Y%m%d")
-    date = '20210324'
+    date = yesterday.strftime("%Y%m%d")
+#     date = '20210324'
 
     host_ip = '34.68.250.64'
 
