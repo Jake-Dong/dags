@@ -13,8 +13,8 @@ def bibio_citaion_DB():
     host_ip = '34.68.250.64'
     biblio_all_list = []
     yesterday = datetime.today() - timedelta(7)
-    # date = yesterday.strftime("%Y%m%d")
-    date = '20210324'
+    date = yesterday.strftime("%Y%m%d")
+#     date = '20210324'
     # db 에 저장되어있는 publication 정보를 가져오는 코드
     try:
         conn = pymysql.connect(
