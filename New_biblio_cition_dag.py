@@ -342,7 +342,7 @@ local_tz = pendulum.timezone("Asia/Seoul")
 
 default_dag_args = {
     "owner": "airflow",
-    "start_date": datetime(2021, 4 ,8, tzinfo=local_tz)
+    "start_date": datetime(2021, 4 ,7, tzinfo=local_tz)
 }
 dag = DAG(
     dag_id='bibio_citaion_DB'
