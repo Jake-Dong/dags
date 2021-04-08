@@ -121,6 +121,7 @@ def pub_num_db():
         for cql1 in cpc_lv1_list:
             print(cql1)
             print('lv1 시작')
+            time.sleep(5)
             try:
                 response = client.published_data_search(
                     cql='pd={date} and (ipc={cql} or cpc={cql})'.format(date=date, cql=cql1)
@@ -150,7 +151,7 @@ def pub_num_db():
                     lv1_end_num_list.extend(end_num)
                     pub_list_lv1 = []
                     for begin_num, end_num in zip(lv1_begin_num_list, lv1_end_num_list):
-                        time.sleep(2)
+                        time.sleep(5)
                         try:
                             response = client.published_data_search(
                                 cql='pd={date} and (ipc={cql} or cpc={cql})'.format(date=date, cql=cql1)
@@ -199,6 +200,7 @@ def pub_num_db():
                     print(lv2_list)
                     for cql2 in lv2_list:
                         print('lv2 시작')
+                        time.sleep(5)
                         try:
                             response = client.published_data_search(
                                 cql='pd={date} and (ipc={cql} or cpc={cql})'.format(date=date, cql=cql2)
@@ -226,6 +228,7 @@ def pub_num_db():
                                 lv2_begin_num_list.extend(begin_num)
                                 lv2_end_num_list.extend(end_num)
                                 pub_list_lv2 = []
+                                time.sleep(5)
                                 for begin_num, end_num in zip(lv2_begin_num_list, lv2_end_num_list):
 
                                     response = client.published_data_search(
@@ -274,8 +277,9 @@ def pub_num_db():
                                     re_cql = cql2 + cql
                                     re_cql3_list.append(re_cql)
                                 print(re_cql3_list)
+                                
                                 for cql3 in re_cql3_list:
-
+                                    time.sleep(5)
                                     print('lv3 시작')
                                     try:
                                         response = client.published_data_search(
@@ -352,6 +356,7 @@ def pub_num_db():
                                         else:
                                             for cql3 in re_cql3_list:
                                                 for coun in country_code:
+                                                    time.sleep(5)
                                                     try:
                                                         response = client.published_data_search(
                                                             cql='pd={date} and (ipc={cql} or cpc={cql}) and ap={coun}'.format(
@@ -384,8 +389,10 @@ def pub_num_db():
                                                         coun_begin_num_list.extend(begin_num)
                                                         coun_end_num_list.extend(end_num)
                                                         pub_list_lv3_country = []
+                                                        
                                                         for begin_num, end_num in zip(coun_begin_num_list,
                                                                                       coun_end_num_list):
+                                                            time.sleep(5)
 
                                                             response = client.published_data_search(
                                                                 cql='pd={date} and (ipc={cql} or cpc={cql} and ap={coun})'.format(
