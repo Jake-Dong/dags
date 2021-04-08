@@ -130,8 +130,8 @@ def pub_num_db():
                     , constituents=['biblio']
                 )
             except Exception as ex:
-                print(ex)
-                pass
+                print(ex,"lv1 count 하기위한 response 에러. 다시 시도합니다.")
+                return response
             else:
                 xmlStr = response.text
                 roots = ET.fromstring(xmlStr)
@@ -152,288 +152,314 @@ def pub_num_db():
                         lv1_end_num_list.extend(end_num)
                         pub_list_lv1 = []
                         for begin_num, end_num in zip(lv1_begin_num_list, lv1_end_num_list):
-                            response = client.published_data_search(
-                                cql='pd={date} and (ipc={cql} or cpc={cql})'.format(date=date, cql=cql1)
-                                , range_begin=begin_num
-                                , range_end=end_num
-                                , constituents=['biblio']
-                            )
-                            xmlStr = response.text
-                            roots = ET.fromstring(xmlStr)
-
-                            for exchange_document in roots.iter('{http://www.epo.org/exchange}exchange-document'):
-                                doc_simple_id = exchange_document.attrib.get('family-id')
-                                pub_country = exchange_document.attrib.get('country')
-                                pub_doc_number = exchange_document.attrib.get('doc-number')
-                                pub_kind = exchange_document.attrib.get('kind')
-                                pub_list_lv1.append([doc_simple_id
-                                                        , pub_country
-                                                        , pub_doc_number
-                                                        , pub_kind])
-
-                        try:
-                            conn = pymysql.connect(
-                                host=host_ip
-                                , user=user_id
-                                , port=3306
-                                , password='admin'
-                                , database='test'
-
-                            )
-                            cur = conn.cursor()
-                            for row in pub_list_lv1:
-                                sql = """INSERT INTO pub_num_data_{} VALUES(%s,%s,%s,%s);""".format(date)
-                                val = row
-                                cur.execute(sql, val)
-                                conn.commit()
-                        except Exception as ex:
-                            print(ex, "Lv1 insert DB 오류")
-                        finally:
-                            conn.close()
-
-                    else:
-                        lv2_list = list(lv2_fun(cql1))
-                        print(lv2_list)
-                        for cql2 in lv2_list:
-                            print('lv2 시작')
+                            time.sleep(2)
                             try:
                                 response = client.published_data_search(
-                                    cql='pd={date} and (ipc={cql} or cpc={cql})'.format(date=date, cql=cql2)
-                                    , range_begin=1
-                                    , range_end=1
+                                    cql='pd={date} and (ipc={cql} or cpc={cql})'.format(date=date, cql=cql1)
+                                    , range_begin=begin_num
+                                    , range_end=end_num
                                     , constituents=['biblio']
                                 )
-                            except:
-                                pass
+                            except Exception as ex:
+                                print(ex,':',begin_num,":lv1 begin,end 번호 반복 입력중 에러입니다. 다시 시도 합니다.")
+                                return response
                             else:
-
                                 xmlStr = response.text
                                 roots = ET.fromstring(xmlStr)
 
-                                lv2_begin_num_list = []
-                                lv2_end_num_list = []
+                                for exchange_document in roots.iter('{http://www.epo.org/exchange}exchange-document'):
+                                    doc_simple_id = exchange_document.attrib.get('family-id')
+                                    pub_country = exchange_document.attrib.get('country')
+                                    pub_doc_number = exchange_document.attrib.get('doc-number')
+                                    pub_kind = exchange_document.attrib.get('kind')
+                                    pub_list_lv1.append([doc_simple_id
+                                                            , pub_country
+                                                            , pub_doc_number
+                                                            , pub_kind])
 
-                                for total_result2 in roots.iter('{http://ops.epo.org}biblio-search'):
-                                    total_result_count2 = int(total_result2.attrib.get('total-result-count'))
-                                    print('lv2 total', total_result_count2, ' date=', date, ' cql=', cql2)
-                                    if total_result_count2 < 2000:
-                                        num_list = int(total_result_count2 / 100)
-                                        begin_num = begin_max_num_list[:num_list + 1]
-                                        end_num = end_max_num_list[:num_list + 1]
+                            try:
+                                conn = pymysql.connect(
+                                    host=host_ip
+                                    , user=user_id
+                                    , port=3306
+                                    , password='admin'
+                                    , database='test'
 
-                                        lv2_begin_num_list.extend(begin_num)
-                                        lv2_end_num_list.extend(end_num)
-                                        pub_list_lv2 = []
-                                        for begin_num, end_num in zip(lv2_begin_num_list, lv2_end_num_list):
-                                            response = client.published_data_search(
-                                                cql='pd={date} and (ipc={cql} or cpc={cql})'.format(date=date, cql=cql2)
-                                                , range_begin=begin_num
-                                                , range_end=end_num
-                                                , constituents=['biblio']
-                                            )
-                                            xmlStr = response.text
-                                            roots = ET.fromstring(xmlStr)
+                                )
+                                cur = conn.cursor()
+                                for row in pub_list_lv1:
+                                    sql = """INSERT INTO pub_num_data_{} VALUES(%s,%s,%s,%s);""".format(date)
+                                    val = row
+                                    cur.execute(sql, val)
+                                    conn.commit()
+                            except Exception as ex:
+                                print(ex, "Lv1 insert DB 오류")
+                            finally:
+                                conn.close()
 
-                                            for exchange_document in roots.iter(
-                                                    '{http://www.epo.org/exchange}exchange-document'):
-                                                doc_simple_id = exchange_document.attrib.get('family-id')
-                                                pub_country = exchange_document.attrib.get('country')
-                                                pub_doc_number = exchange_document.attrib.get('doc-number')
-                                                pub_kind = exchange_document.attrib.get('kind')
+                        else:
+                            lv2_list = list(lv2_fun(cql1))
+                            print(lv2_list)
+                            for cql2 in lv2_list:
+                                print('lv2 시작')
+                                try:
+                                    response = client.published_data_search(
+                                        cql='pd={date} and (ipc={cql} or cpc={cql})'.format(date=date, cql=cql2)
+                                        , range_begin=1
+                                        , range_end=1
+                                        , constituents=['biblio']
+                                    )
+                                except Exception as ex:
+                                    print(ex,"lv2 count 하기위한 response 에러. 다시 시도합니다.")
+                                    return response
+                                else:
 
-                                                pub_list_lv2.append([doc_simple_id
-                                                                        , pub_country
-                                                                        , pub_doc_number
-                                                                        , pub_kind])
-                                        try:
-                                            conn = pymysql.connect(
-                                                host=host_ip
-                                                , user=user_id
-                                                , port=3306
-                                                , password='admin'
-                                                , database='test'
+                                    xmlStr = response.text
+                                    roots = ET.fromstring(xmlStr)
 
-                                            )
-                                            cur = conn.cursor()
-                                            for row in pub_list_lv2:
-                                                sql = """INSERT INTO pub_num_data_{} VALUES(%s,%s,%s,%s);""".format(date)
-                                                val = row
-                                                cur.execute(sql, val)
-                                                conn.commit()
-                                        except Exception as ex:
-                                            print(ex, "Lv2 insert 오류")
-                                        finally:
-                                            conn.close()
+                                    lv2_begin_num_list = []
+                                    lv2_end_num_list = []
 
-                                    else:
-                                        re_cql3_list = []
-                                        for cql in cpc_lv3_all:
-                                            re_cql = cql2 + cql
-                                            re_cql3_list.append(re_cql)
-                                        print(re_cql3_list)
-                                        for cql3 in re_cql3_list:
+                                    for total_result2 in roots.iter('{http://ops.epo.org}biblio-search'):
+                                        total_result_count2 = int(total_result2.attrib.get('total-result-count'))
+                                        print('lv2 total', total_result_count2, ' date=', date, ' cql=', cql2)
+                                        if total_result_count2 < 2000:
+                                            num_list = int(total_result_count2 / 100)
+                                            begin_num = begin_max_num_list[:num_list + 1]
+                                            end_num = end_max_num_list[:num_list + 1]
 
-                                            print('lv3 시작')
-                                            try:
-                                                response = client.published_data_search(
-                                                    cql='pd={date} and (ipc={cql} or cpc={cql})'.format(date=date, cql=cql3)
-                                                    , range_begin=1
-                                                    , range_end=1
-                                                    , constituents=['biblio']
-                                                )
-                                            except:
-                                                pass
+                                            lv2_begin_num_list.extend(begin_num)
+                                            lv2_end_num_list.extend(end_num)
+                                            pub_list_lv2 = []
+                                            for begin_num, end_num in zip(lv2_begin_num_list, lv2_end_num_list):
+                                                try:
+                                                    response = client.published_data_search(
+                                                        cql='pd={date} and (ipc={cql} or cpc={cql})'.format(date=date, cql=cql2)
+                                                        , range_begin=begin_num
+                                                        , range_end=end_num
+                                                        , constituents=['biblio']
+                                                    )
+                                                except Exception as ex:
+                                                    print(ex, ':', begin_num,
+                                                          ":lv2 begin,end 번호 반복 입력중 에러입니다. 다시 시도 합니다.")
+                                                    return response
+                                                else:
+                                                    xmlStr = response.text
+                                                    roots = ET.fromstring(xmlStr)
+
+                                                    for exchange_document in roots.iter(
+                                                            '{http://www.epo.org/exchange}exchange-document'):
+                                                        doc_simple_id = exchange_document.attrib.get('family-id')
+                                                        pub_country = exchange_document.attrib.get('country')
+                                                        pub_doc_number = exchange_document.attrib.get('doc-number')
+                                                        pub_kind = exchange_document.attrib.get('kind')
+
+                                                        pub_list_lv2.append([doc_simple_id
+                                                                                , pub_country
+                                                                                , pub_doc_number
+                                                                                , pub_kind])
+                                                try:
+                                                    conn = pymysql.connect(
+                                                        host=host_ip
+                                                        , user=user_id
+                                                        , port=3306
+                                                        , password='admin'
+                                                        , database='test'
+
+                                                    )
+                                                    cur = conn.cursor()
+                                                    for row in pub_list_lv2:
+                                                        sql = """INSERT INTO pub_num_data_{} VALUES(%s,%s,%s,%s);""".format(date)
+                                                        val = row
+                                                        cur.execute(sql, val)
+                                                        conn.commit()
+                                                except Exception as ex:
+                                                    print(ex, "Lv2 insert 오류")
+                                                finally:
+                                                    conn.close()
+
                                             else:
+                                                re_cql3_list = []
+                                                for cql in cpc_lv3_all:
+                                                    re_cql = cql2 + cql
+                                                    re_cql3_list.append(re_cql)
+                                                print(re_cql3_list)
+                                                for cql3 in re_cql3_list:
 
-                                                xmlStr = response.text
-                                                roots = ET.fromstring(xmlStr)
-
-                                                lv3_begin_num_list = []
-                                                lv3_end_num_list = []
-                                                pub_list_lv3 = []
-                                                for total_result3 in roots.iter('{http://ops.epo.org}biblio-search'):
-                                                    total_result_count3 = int(
-                                                        total_result3.attrib.get('total-result-count'))
-                                                    print('lv3 total', total_result_count3, ' date=', date, ' cql=', cql3)
-                                                    if total_result_count3 < 2000:
-                                                        num_list = int(total_result_count3 / 100)
-                                                        begin_num = begin_max_num_list[:num_list + 1]
-                                                        end_num = end_max_num_list[:num_list + 1]
-
-                                                        lv3_begin_num_list.extend(begin_num)
-                                                        lv3_end_num_list.extend(end_num)
-                                                        for begin_num, end_num in zip(lv3_begin_num_list, lv3_end_num_list):
-                                                            response = client.published_data_search(
-                                                                cql='pd={date} and (ipc={cql} or cpc={cql})'.format(
-                                                                    date=date, cql=cql3)
-                                                                , range_begin=begin_num
-                                                                , range_end=end_num
-                                                                , constituents=['biblio']
-                                                            )
-                                                            xmlStr = response.text
-                                                            roots = ET.fromstring(xmlStr)
-                                                            for exchange_document in roots.iter(
-                                                                    '{http://www.epo.org/exchange}exchange-document'):
-                                                                doc_simple_id = exchange_document.attrib.get(
-                                                                    'family-id')
-                                                                pub_country = exchange_document.attrib.get('country')
-                                                                pub_doc_number = exchange_document.attrib.get(
-                                                                    'doc-number')
-                                                                pub_kind = exchange_document.attrib.get('kind')
-                                                                pub_list = [doc_simple_id, pub_country, pub_doc_number,
-                                                                            pub_kind]
-                                                                pub_list_lv3.append(doc_simple_id
-                                                                                    , pub_country
-                                                                                    , pub_doc_number
-                                                                                    , pub_kind)
-                                                        try:
-                                                            conn = pymysql.connect(
-                                                                host=host_ip
-                                                                , user=user_id
-                                                                , port=3306
-                                                                , password='admin'
-                                                                , database='test'
-
-                                                            )
-                                                            cur = conn.cursor()
-                                                            for row in pub_list_lv3:
-                                                                sql = """INSERT INTO pub_num_data_{} VALUES(%s,%s,%s,%s);""".format(
-                                                                    date)
-                                                                val = row
-                                                                cur.execute(sql, val)
-                                                                conn.commit()
-                                                        except Exception as ex:
-                                                            print(ex, "lv3 insert 오류")
-                                                        finally:
-                                                            conn.close()
-
+                                                    print('lv3 시작')
+                                                    try:
+                                                        response = client.published_data_search(
+                                                            cql='pd={date} and (ipc={cql} or cpc={cql})'.format(date=date, cql=cql3)
+                                                            , range_begin=1
+                                                            , range_end=1
+                                                            , constituents=['biblio']
+                                                        )
+                                                    except Exception as ex:
+                                                        print(ex,"lv3 count 에서 오류발생. 다시시도 ")
+                                                        return response
                                                     else:
-                                                        for cql3 in re_cql3_list:
-                                                            for coun in country_code:
-                                                                try:
-                                                                    response = client.published_data_search(
-                                                                        cql='pd={date} and (ipc={cql} or cpc={cql}) and ap={coun}'.format(
-                                                                            date=date, cql=cql3, coun=coun)
-                                                                        , range_begin=1
-                                                                        , range_end=1
-                                                                        , constituents=['biblio']
-                                                                    )
-                                                                except:
-                                                                    pass
+
+                                                        xmlStr = response.text
+                                                        roots = ET.fromstring(xmlStr)
+
+                                                        lv3_begin_num_list = []
+                                                        lv3_end_num_list = []
+                                                        pub_list_lv3 = []
+                                                        for total_result3 in roots.iter('{http://ops.epo.org}biblio-search'):
+                                                            total_result_count3 = int(
+                                                                total_result3.attrib.get('total-result-count'))
+                                                            print('lv3 total', total_result_count3, ' date=', date, ' cql=', cql3)
+                                                            if total_result_count3 < 2000:
+                                                                num_list = int(total_result_count3 / 100)
+                                                                begin_num = begin_max_num_list[:num_list + 1]
+                                                                end_num = end_max_num_list[:num_list + 1]
+
+                                                                lv3_begin_num_list.extend(begin_num)
+                                                                lv3_end_num_list.extend(end_num)
+                                                                for begin_num, end_num in zip(lv3_begin_num_list, lv3_end_num_list):
+                                                                    try:
+                                                                        response = client.published_data_search(
+                                                                            cql='pd={date} and (ipc={cql} or cpc={cql})'.format(
+                                                                                date=date, cql=cql3)
+                                                                            , range_begin=begin_num
+                                                                            , range_end=end_num
+                                                                            , constituents=['biblio']
+                                                                        )
+                                                                    except Exception as ex:
+                                                                        print(ex, ':', begin_num,
+                                                                              ":lv3 begin,end 번호 반복 입력중 에러입니다. 다시 시도 합니다.")
+                                                                        return response
+                                                                    else:
+                                                                        xmlStr = response.text
+                                                                        roots = ET.fromstring(xmlStr)
+                                                                        for exchange_document in roots.iter(
+                                                                                '{http://www.epo.org/exchange}exchange-document'):
+                                                                            doc_simple_id = exchange_document.attrib.get(
+                                                                                'family-id')
+                                                                            pub_country = exchange_document.attrib.get('country')
+                                                                            pub_doc_number = exchange_document.attrib.get(
+                                                                                'doc-number')
+                                                                            pub_kind = exchange_document.attrib.get('kind')
+                                                                            pub_list = [doc_simple_id, pub_country, pub_doc_number,
+                                                                                        pub_kind]
+                                                                            pub_list_lv3.append(doc_simple_id
+                                                                                                , pub_country
+                                                                                                , pub_doc_number
+                                                                                                , pub_kind)
+                                                                    try:
+                                                                        conn = pymysql.connect(
+                                                                            host=host_ip
+                                                                            , user=user_id
+                                                                            , port=3306
+                                                                            , password='admin'
+                                                                            , database='test'
+
+                                                                        )
+                                                                        cur = conn.cursor()
+                                                                        for row in pub_list_lv3:
+                                                                            sql = """INSERT INTO pub_num_data_{} VALUES(%s,%s,%s,%s);""".format(
+                                                                                date)
+                                                                            val = row
+                                                                            cur.execute(sql, val)
+                                                                            conn.commit()
+                                                                    except Exception as ex:
+                                                                        print(ex, "lv3 insert 오류")
+                                                                    finally:
+                                                                        conn.close()
+
                                                                 else:
+                                                                    for cql3 in re_cql3_list:
+                                                                        for coun in country_code:
+                                                                            try:
+                                                                                response = client.published_data_search(
+                                                                                    cql='pd={date} and (ipc={cql} or cpc={cql}) and ap={coun}'.format(
+                                                                                        date=date, cql=cql3, coun=coun)
+                                                                                    , range_begin=1
+                                                                                    , range_end=1
+                                                                                    , constituents=['biblio']
+                                                                                )
+                                                                            except:
+                                                                                print(ex, "lv4 count 에서 오류발생. 다시시도 ")
+                                                                                return response
+                                                                            else:
 
-                                                                    xmlStr = response.text
-                                                                    roots = ET.fromstring(xmlStr)
+                                                                                xmlStr = response.text
+                                                                                roots = ET.fromstring(xmlStr)
 
-                                                                    coun_begin_num_list = []
-                                                                    coun_end_num_list = []
+                                                                                coun_begin_num_list = []
+                                                                                coun_end_num_list = []
 
-                                                                    for total_result in roots.iter(
-                                                                            '{http://ops.epo.org}biblio-search'):
-                                                                        total_result_count = int(
-                                                                            total_result.attrib.get('total-result-count'))
-                                                                        print('lv4 total', total_result_count, ' date=',
-                                                                              date, ' cql=',
-                                                                              cql3, ' coun=', coun)
-                                                                        num_list = int(total_result_count / 100)
+                                                                                for total_result in roots.iter(
+                                                                                        '{http://ops.epo.org}biblio-search'):
+                                                                                    total_result_count = int(
+                                                                                        total_result.attrib.get('total-result-count'))
+                                                                                    print('lv4 total', total_result_count, ' date=',
+                                                                                          date, ' cql=',
+                                                                                          cql3, ' coun=', coun)
+                                                                                    num_list = int(total_result_count / 100)
 
-                                                                        begin_num = begin_max_num_list[:num_list + 1]
-                                                                        end_num = end_max_num_list[:num_list + 1]
+                                                                                    begin_num = begin_max_num_list[:num_list + 1]
+                                                                                    end_num = end_max_num_list[:num_list + 1]
 
-                                                                        coun_begin_num_list.extend(begin_num)
-                                                                        coun_end_num_list.extend(end_num)
-                                                                        pub_list_lv3_country = []
-                                                                        for begin_num, end_num in zip(coun_begin_num_list,
-                                                                                                      coun_end_num_list):
+                                                                                    coun_begin_num_list.extend(begin_num)
+                                                                                    coun_end_num_list.extend(end_num)
+                                                                                    pub_list_lv3_country = []
+                                                                                    for begin_num, end_num in zip(coun_begin_num_list,
+                                                                                                                  coun_end_num_list):
+                                                                                        try:
+                                                                                            response = client.published_data_search(
+                                                                                                cql='pd={date} and (ipc={cql} or cpc={cql} and ap={coun})'.format(
+                                                                                                    date=date, cql=cql3, coun=coun)
+                                                                                                , range_begin=begin_num
+                                                                                                , range_end=end_num
+                                                                                                , constituents=['biblio']
+                                                                                            )
+                                                                                        except Exception as ex:
+                                                                                            print(ex, ':', begin_num,
+                                                                                                  ":lv3 begin,end 번호 반복 입력중 에러입니다. 다시 시도 합니다.")
+                                                                                            return response
+                                                                                        else:
 
-                                                                            response = client.published_data_search(
-                                                                                cql='pd={date} and (ipc={cql} or cpc={cql} and ap={coun})'.format(
-                                                                                    date=date, cql=cql3, coun=coun)
-                                                                                , range_begin=begin_num
-                                                                                , range_end=end_num
-                                                                                , constituents=['biblio']
-                                                                            )
+                                                                                            xmlStr = response.text
+                                                                                            roots = ET.fromstring(xmlStr)
 
-                                                                            xmlStr = response.text
-                                                                            roots = ET.fromstring(xmlStr)
+                                                                                            for exchange_document in roots.iter(
+                                                                                                    '{http://www.epo.org/exchange}exchange-document'):
+                                                                                                doc_simple_id = exchange_document.attrib.get(
+                                                                                                    'family-id')
+                                                                                                pub_country = exchange_document.attrib.get(
+                                                                                                    'country')
+                                                                                                pub_doc_number = exchange_document.attrib.get(
+                                                                                                    'doc-number')
+                                                                                                pub_kind = exchange_document.attrib.get(
+                                                                                                    'kind')
 
-                                                                            for exchange_document in roots.iter(
-                                                                                    '{http://www.epo.org/exchange}exchange-document'):
-                                                                                doc_simple_id = exchange_document.attrib.get(
-                                                                                    'family-id')
-                                                                                pub_country = exchange_document.attrib.get(
-                                                                                    'country')
-                                                                                pub_doc_number = exchange_document.attrib.get(
-                                                                                    'doc-number')
-                                                                                pub_kind = exchange_document.attrib.get(
-                                                                                    'kind')
+                                                                                                pub_list_lv3_country.append([doc_simple_id
+                                                                                                                                ,
+                                                                                                                             pub_country
+                                                                                                                                ,
+                                                                                                                             pub_doc_number
+                                                                                                                                , pub_kind])
 
-                                                                                pub_list_lv3_country.append([doc_simple_id
-                                                                                                                ,
-                                                                                                             pub_country
-                                                                                                                ,
-                                                                                                             pub_doc_number
-                                                                                                                , pub_kind])
-
-                                                                        try:
-                                                                            conn = pymysql.connect(
-                                                                                host=host_ip
-                                                                                , user=user_id
-                                                                                , port=3306
-                                                                                , password='admin'
-                                                                                , database='test'
-                                                                            )
-                                                                            cur = conn.cursor()
-                                                                            for row in pub_list_lv3_country:
-                                                                                sql = """INSERT INTO pub_num_data_{} VALUES(%s,%s,%s,%s);""".format(
-                                                                                    date)
-                                                                                val = row
-                                                                                cur.execute(sql, val)
-                                                                                conn.commit()
-                                                                        except Exception as ex:
-                                                                            print(ex, "lv4 insert 오류")
-                                                                        finally:
-                                                                            conn.close()
+                                                                                        try:
+                                                                                            conn = pymysql.connect(
+                                                                                                host=host_ip
+                                                                                                , user=user_id
+                                                                                                , port=3306
+                                                                                                , password='admin'
+                                                                                                , database='test'
+                                                                                            )
+                                                                                            cur = conn.cursor()
+                                                                                            for row in pub_list_lv3_country:
+                                                                                                sql = """INSERT INTO pub_num_data_{} VALUES(%s,%s,%s,%s);""".format(
+                                                                                                    date)
+                                                                                                val = row
+                                                                                                cur.execute(sql, val)
+                                                                                                conn.commit()
+                                                                                        except Exception as ex:
+                                                                                            print(ex, "lv4 insert 오류")
+                                                                                        finally:
+                                                                                            conn.close()
 
 
 
