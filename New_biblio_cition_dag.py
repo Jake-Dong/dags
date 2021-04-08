@@ -5,6 +5,7 @@ import time
 from datetime import datetime, timedelta
 import pandas
 import pymysql
+import pendulum
 from airflow.models import DAG
 from airflow.utils.dates import days_ago
 from airflow.operators.python_operator import PythonOperator
@@ -336,14 +337,17 @@ def bibio_citaion_DB():
     finally:
         conn.close()
 
+        
+local_tz = pendulum.timezone("Asia/Seoul")
+
 default_dag_args = {
     "owner": "airflow",
-    "start_date": datetime.today()
+    "start_date": datetime(2021, 4 ,8, tzinfo=local_tz)
 }
 dag = DAG(
     dag_id='bibio_citaion_DB'
     , default_args=default_dag_args
-    , schedule_interval='0 9 * * *'
+    , schedule_interval='0 5 * * *'
     # , schedule_interval=timedelta(1)
 )
 task1 = PythonOperator(
