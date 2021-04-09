@@ -330,10 +330,10 @@ def pub_num_db():
                                                             pub_kind = exchange_document.attrib.get('kind')
                                                             pub_list = [doc_simple_id, pub_country, pub_doc_number,
                                                                         pub_kind]
-                                                            pub_list_lv3.append(doc_simple_id
+                                                            pub_list_lv3.append([doc_simple_id
                                                                                 , pub_country
                                                                                 , pub_doc_number
-                                                                                , pub_kind)
+                                                                                , pub_kind])
                                                     try:
                                                         conn = pymysql.connect(
                                                             host=host_ip
