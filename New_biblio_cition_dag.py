@@ -347,10 +347,12 @@ def bibio_citaion_DB():
         finally:
             conn.close()
 
-local_tz = pendulum.timezone("Asia/Seoul")
+local_tz = pendulum.timezone('Asia/Seoul')
+today = datetime.today()
+
 default_dag_args = {
     "owner": "airflow",
-    "start_date": datetime(2021, 4, 7, tzinfo=local_tz)
+    "start_date": datetime(today.year, today.month, today.day, tzinfo=local_tz) - timedelta(hours=25)
 }
 dag = DAG(
     dag_id='bibio_citaion_DB'
