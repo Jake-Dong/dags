@@ -160,15 +160,17 @@ def pub_num_db():
                             xmlStr = response.text
                             roots = ET.fromstring(xmlStr)
 
-                            for exchange_document in roots.iter('{http://www.epo.org/exchange}exchange-document'):
-                                doc_simple_id = exchange_document.attrib.get('family-id')
-                                pub_country = exchange_document.attrib.get('country')
-                                pub_doc_number = exchange_document.attrib.get('doc-number')
-                                pub_kind = exchange_document.attrib.get('kind')
-                                pub_list_lv1.append([doc_simple_id
-                                                        , pub_country
-                                                        , pub_doc_number
-                                                        , pub_kind])
+                            for family, country, number, kind in zip(
+                                    roots.iter('{http://ops.epo.org}publication-reference')
+                                    , roots.iter('{http://www.epo.org/exchange}country')
+                                    , roots.iter('{http://www.epo.org/exchange}doc-number')
+                                    , roots.iter('{http://www.epo.org/exchange}kind')):
+                                family_id = family.attrib.get('family-id')
+                                pub_country = country.text
+                                pub_number = number.text
+                                pub_kind = kind.text
+
+                                pub_list_lv1.append([family_id, pub_country, pub_number, pub_kind])
 
                         try:
                             conn = pymysql.connect(
@@ -238,17 +240,17 @@ def pub_num_db():
                                         xmlStr = response.text
                                         roots = ET.fromstring(xmlStr)
 
-                                        for exchange_document in roots.iter(
-                                                '{http://www.epo.org/exchange}exchange-document'):
-                                            doc_simple_id = exchange_document.attrib.get('family-id')
-                                            pub_country = exchange_document.attrib.get('country')
-                                            pub_doc_number = exchange_document.attrib.get('doc-number')
-                                            pub_kind = exchange_document.attrib.get('kind')
+                                        for family, country, number, kind in zip(
+                                                roots.iter('{http://ops.epo.org}publication-reference')
+                                                , roots.iter('{http://www.epo.org/exchange}country')
+                                                , roots.iter('{http://www.epo.org/exchange}doc-number')
+                                                , roots.iter('{http://www.epo.org/exchange}kind')):
+                                            family_id = family.attrib.get('family-id')
+                                            pub_country = country.text
+                                            pub_number = number.text
+                                            pub_kind = kind.text
 
-                                            pub_list_lv2.append([doc_simple_id
-                                                                    , pub_country
-                                                                    , pub_doc_number
-                                                                    , pub_kind])
+                                            pub_list_lv2.append([family_id, pub_country, pub_number, pub_kind])
                                     try:
                                         conn = pymysql.connect(
                                             host=host_ip
@@ -320,20 +322,18 @@ def pub_num_db():
                                                             print(ex, 'lv3 range 반복문 에러')
                                                         xmlStr = response.text
                                                         roots = ET.fromstring(xmlStr)
-                                                        for exchange_document in roots.iter(
-                                                                '{http://www.epo.org/exchange}exchange-document'):
-                                                            doc_simple_id = exchange_document.attrib.get(
-                                                                'family-id')
-                                                            pub_country = exchange_document.attrib.get('country')
-                                                            pub_doc_number = exchange_document.attrib.get(
-                                                                'doc-number')
-                                                            pub_kind = exchange_document.attrib.get('kind')
-                                                            pub_list = [doc_simple_id, pub_country, pub_doc_number,
-                                                                        pub_kind]
-                                                            pub_list_lv3.append([doc_simple_id
-                                                                                , pub_country
-                                                                                , pub_doc_number
-                                                                                , pub_kind])
+                                                        for family, country, number, kind in zip(
+                                                                roots.iter('{http://ops.epo.org}publication-reference')
+                                                                , roots.iter('{http://www.epo.org/exchange}country')
+                                                                , roots.iter('{http://www.epo.org/exchange}doc-number')
+                                                                , roots.iter('{http://www.epo.org/exchange}kind')):
+                                                            family_id = family.attrib.get('family-id')
+                                                            pub_country = country.text
+                                                            pub_number = number.text
+                                                            pub_kind = kind.text
+
+                                                            pub_list_lv3.append(
+                                                                [family_id, pub_country, pub_number, pub_kind])
                                                     try:
                                                         conn = pymysql.connect(
                                                             host=host_ip
@@ -408,23 +408,23 @@ def pub_num_db():
                                                                         xmlStr = response.text
                                                                         roots = ET.fromstring(xmlStr)
 
-                                                                        for exchange_document in roots.iter(
-                                                                                '{http://www.epo.org/exchange}exchange-document'):
-                                                                            doc_simple_id = exchange_document.attrib.get(
-                                                                                'family-id')
-                                                                            pub_country = exchange_document.attrib.get(
-                                                                                'country')
-                                                                            pub_doc_number = exchange_document.attrib.get(
-                                                                                'doc-number')
-                                                                            pub_kind = exchange_document.attrib.get(
-                                                                                'kind')
+                                                                        for family, country, number, kind in zip(
+                                                                                roots.iter(
+                                                                                        '{http://ops.epo.org}publication-reference')
+                                                                                , roots.iter(
+                                                                                    '{http://www.epo.org/exchange}country')
+                                                                                , roots.iter(
+                                                                                    '{http://www.epo.org/exchange}doc-number')
+                                                                                , roots.iter(
+                                                                                    '{http://www.epo.org/exchange}kind')):
+                                                                            family_id = family.attrib.get('family-id')
+                                                                            pub_country = country.text
+                                                                            pub_number = number.text
+                                                                            pub_kind = kind.text
 
-                                                                            pub_list_lv3_country.append([doc_simple_id
-                                                                                                            ,
-                                                                                                         pub_country
-                                                                                                            ,
-                                                                                                         pub_doc_number
-                                                                                                            , pub_kind])
+                                                                            pub_list_lv3_country.append(
+                                                                                [family_id, pub_country, pub_number,
+                                                                                 pub_kind])
 
                                                                     try:
                                                                         conn = pymysql.connect(
