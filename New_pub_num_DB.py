@@ -152,7 +152,7 @@ def pub_num_db():
                                     cql='pd={date} and (ipc={cql} or cpc={cql})'.format(date=date, cql=cql1)
                                     , range_begin=begin_num
                                     , range_end=end_num
-                                    , constituents=['biblio']
+                                    , constituents=None
                                 )
                             except Exception as ex:
                                 print(ex, "lv1 range 반복문 에러")
@@ -233,7 +233,7 @@ def pub_num_db():
                                                 cql='pd={date} and (ipc={cql} or cpc={cql})'.format(date=date, cql=cql2)
                                                 , range_begin=begin_num
                                                 , range_end=end_num
-                                                , constituents=['biblio']
+                                                , constituents=None
                                             )
                                         except Exception as ex:
                                             print(ex, "lv2 range 반복문 에러")
@@ -316,7 +316,7 @@ def pub_num_db():
                                                                     date=date, cql=cql3)
                                                                 , range_begin=begin_num
                                                                 , range_end=end_num
-                                                                , constituents=['biblio']
+                                                                , constituents=None
                                                             )
                                                         except Exception as ex:
                                                             print(ex, 'lv3 range 반복문 에러')
@@ -400,7 +400,7 @@ def pub_num_db():
                                                                                     date=date, cql=cql3, coun=coun)
                                                                                 , range_begin=begin_num
                                                                                 , range_end=end_num
-                                                                                , constituents=['biblio']
+                                                                                , constituents=None
                                                                             )
                                                                         except Exception as ex:
                                                                             print(ex, 'lv4 range 반복문 에러')
