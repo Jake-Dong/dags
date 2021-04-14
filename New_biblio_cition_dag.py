@@ -50,10 +50,10 @@ def bibio_citaion_DB():
         kind_list = []
         family_id_list = []
         for data in datas:
-            family_id = data[1]
-            pub_country = data[2]
-            pub_number = data[3]
-            pub_kind = data[4]
+            family_id = data[0]
+            pub_country = data[1]
+            pub_number = data[2]
+            pub_kind = data[3]
 
             app_doc_num_list.append(pub_number)
             country_list.append(pub_country)
