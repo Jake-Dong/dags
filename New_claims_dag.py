@@ -92,9 +92,12 @@ def claim_DB():
     finally:
         conn.close()
 
+local_tz = pendulum.timezone('Asia/Seoul')
+today = datetime.today()
+
 default_dag_args = {
     "owner": "airflow",
-    "start_date": datetime.today()
+    "start_date": datetime(today.year, today.month, today.day, tzinfo=local_tz) - timedelta(hours=25)
 }
 dag = DAG(
     dag_id='claim_DB'
