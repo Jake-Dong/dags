@@ -181,7 +181,7 @@ def pub_num_db():
                             cur = conn.cursor()
                             sql = """INSERT INTO pub_num_data_{} VALUES(%s,%s,%s,%s,%s);""".format(date)
                             val = tuple(pub_list_lv1)
-                            cur.execute(sql, val)
+                            cur.executemany(sql, val)
                             conn.commit()
                         except Exception as ex:
                             print(ex, "Lv1 insert DB 오류")
@@ -257,7 +257,7 @@ def pub_num_db():
                                         cur = conn.cursor()
                                         sql = """INSERT INTO pub_num_data_{} VALUES(%s,%s,%s,%s,%s);""".format(date)
                                         val = tuple(pub_list_lv2)
-                                        cur.execute(sql, val)
+                                        cur.executemany(sql, val)
                                         conn.commit()
                                     except Exception as ex:
                                         print(ex, "Lv2 insert 오류")
@@ -339,7 +339,7 @@ def pub_num_db():
                                                         sql = """INSERT INTO pub_num_data_{} VALUES(%s,%s,%s,%s,%s);""".format(
                                                             date)
                                                         val = tuple(pub_list_lv3)
-                                                        cur.execute(sql, val)
+                                                        cur.executemany(sql, val)
                                                         conn.commit()
                                                     except Exception as ex:
                                                         print(ex, "lv3 insert 오류")
@@ -426,7 +426,7 @@ def pub_num_db():
                                                                         sql = """INSERT INTO pub_num_data_{} VALUES(%s,%s,%s,%s,%s);""".format(
                                                                             date)
                                                                         val = tuple(pub_list_lv3_country)
-                                                                        cur.execute(sql, val)
+                                                                        cur.executemany(sql, val)
                                                                         conn.commit()
                                                                     except Exception as ex:
                                                                         print(ex, "lv4 insert 오류")
