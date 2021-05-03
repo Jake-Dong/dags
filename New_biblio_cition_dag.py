@@ -338,7 +338,7 @@ def bibio_citaion_DB():
 
             sql_1 = "INSERT INTO biblio_citation_info_test VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
             val = tuple(biblio_all_list)
-            cur.execute(sql_1,val)
+            cur.executemany(sql_1,val)
             conn.commit()
         except Exception as ex:
             print(ex,"DB insert 오류")
