@@ -29,6 +29,7 @@ def bibio_citaion_DB():
         token = response['access_token']
         return token
     #=====================================tor 프록시 설정.
+
     proxies = {'http': 'socks5://127.0.0.1:9050',
                'https': 'socks5://127.0.0.1:9050'}
     # ====================================DB 접속 및 publication-number 데이터 가져오기
