@@ -74,7 +74,7 @@ def pub_num_db():
 
     yesterday = datetime.today() - timedelta(7)
 
-    dt_list = yesterday.strftime("%Y%m%d")
+    dt_list = [yesterday.strftime("%Y%m%d")]
 
     #  해당 리스트는 total_result 가 2000 이하 예를들어 300 개 일때 20번의 반복문을 돌면 비효율적이기때문에 아래의 수식으로 최적의 반복문만 돌기위한 사전작업이다.
     begin_max_num_list = ['1', '100', '200', '300', '400', '500', '600', '700', '800', '900', '1000', '1100', '1200',
@@ -179,11 +179,10 @@ def pub_num_db():
 
                             )
                             cur = conn.cursor()
-                            for row in pub_list_lv1:
-                                sql = """INSERT INTO pub_num_data_{} VALUES(%s,%s,%s,%s,%s);""".format(date)
-                                val = row
-                                cur.execute(sql, val)
-                                conn.commit()
+                            sql = """INSERT INTO pub_num_data_{} VALUES(%s,%s,%s,%s,%s);""".format(date)
+                            val = tuple(pub_list_lv1)
+                            cur.execute(sql, val)
+                            conn.commit()
                         except Exception as ex:
                             print(ex, "Lv1 insert DB 오류")
                         finally:
@@ -256,11 +255,10 @@ def pub_num_db():
 
                                         )
                                         cur = conn.cursor()
-                                        for row in pub_list_lv2:
-                                            sql = """INSERT INTO pub_num_data_{} VALUES(%s,%s,%s,%s,%s);""".format(date)
-                                            val = row
-                                            cur.execute(sql, val)
-                                            conn.commit()
+                                        sql = """INSERT INTO pub_num_data_{} VALUES(%s,%s,%s,%s,%s);""".format(date)
+                                        val = tuple(pub_list_lv2)
+                                        cur.execute(sql, val)
+                                        conn.commit()
                                     except Exception as ex:
                                         print(ex, "Lv2 insert 오류")
                                     finally:
@@ -338,12 +336,11 @@ def pub_num_db():
 
                                                         )
                                                         cur = conn.cursor()
-                                                        for row in pub_list_lv3:
-                                                            sql = """INSERT INTO pub_num_data_{} VALUES(%s,%s,%s,%s,%s);""".format(
-                                                                date)
-                                                            val = row
-                                                            cur.execute(sql, val)
-                                                            conn.commit()
+                                                        sql = """INSERT INTO pub_num_data_{} VALUES(%s,%s,%s,%s,%s);""".format(
+                                                            date)
+                                                        val = tuple(pub_list_lv3)
+                                                        cur.execute(sql, val)
+                                                        conn.commit()
                                                     except Exception as ex:
                                                         print(ex, "lv3 insert 오류")
                                                     finally:
@@ -425,12 +422,12 @@ def pub_num_db():
                                                                             , database='test'
                                                                         )
                                                                         cur = conn.cursor()
-                                                                        for row in pub_list_lv3_country:
-                                                                            sql = """INSERT INTO pub_num_data_{} VALUES(%s,%s,%s,%s,%s);""".format(
-                                                                                date)
-                                                                            val = row
-                                                                            cur.execute(sql, val)
-                                                                            conn.commit()
+
+                                                                        sql = """INSERT INTO pub_num_data_{} VALUES(%s,%s,%s,%s,%s);""".format(
+                                                                            date)
+                                                                        val = tuple(pub_list_lv3_country)
+                                                                        cur.execute(sql, val)
+                                                                        conn.commit()
                                                                     except Exception as ex:
                                                                         print(ex, "lv4 insert 오류")
                                                                     finally:
