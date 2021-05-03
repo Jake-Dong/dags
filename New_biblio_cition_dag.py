@@ -22,7 +22,7 @@ def bibio_citaion_DB():
 
     # type(dt_index) => DatetimeIndex
     # DatetimeIndex => list(str)
-    dt_list = [yesterday.strftime("%Y%m%d").tolist()]
+    dt_list = [yesterday.strftime("%Y%m%d")]
 
     for date in dt_list:
         # db 에 저장되어있는 publication 정보를 가져오는 코드
@@ -336,7 +336,7 @@ def bibio_citaion_DB():
             )
             cur = conn.cursor()
 
-            sql_1 = "INSERT INTO biblio_citation_info_test VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
+            sql_1 = "INSERT INTO biblio_info VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
             val = tuple(biblio_all_list)
             cur.executemany(sql_1,val)
             conn.commit()
