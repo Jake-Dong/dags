@@ -22,7 +22,7 @@ def bibio_citaion_DB():
 
     # type(dt_index) => DatetimeIndex
     # DatetimeIndex => list(str)
-    dt_list = dt_index.strftime("%Y%m%d").tolist()
+    dt_list = [yesterday.strftime("%Y%m%d").tolist()]
 
     for date in dt_list:
         # db 에 저장되어있는 publication 정보를 가져오는 코드
@@ -335,13 +335,11 @@ def bibio_citaion_DB():
                 , port=3306
             )
             cur = conn.cursor()
-            for row in biblio_all_list:
-                print(row)
-                cur = conn.cursor()
-                sql_1 = "INSERT INTO biblio_citation_info_test VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
-                val = row
-                cur.execute(sql_1,val)
-                conn.commit()
+
+            sql_1 = "INSERT INTO biblio_citation_info_test VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);"
+            val = tuple(biblio_all_list)
+            cur.execute(sql_1,val)
+            conn.commit()
         except Exception as ex:
             print(ex,"DB insert 오류")
         finally:
