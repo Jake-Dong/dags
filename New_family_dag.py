@@ -9,17 +9,17 @@ import pendulum
 from airflow.models import DAG
 from airflow.utils.dates import days_ago
 from airflow.operators.python_operator import PythonOperator
-def New_familt_DB():
+def New_family_DB():
     host_ip = '34.68.250.64'
-    yesterday = datetime.today() - timedelta(7)
+    yesterday = datetime.today() - timedelta(8)
 
-    dt_index = pandas.date_range(start='20210201', end='20210210')
+    #dt_index = pandas.date_range(start='20210201', end='20210210')
     # pandas.date_range(start='20160901', end='20161031',freq='W-MON')
     # 을 하면 해당 기간 매주 월요일들만 추출합니다.
 
     # type(dt_index) => DatetimeIndex
     # DatetimeIndex => list(str)
-    dt_list = dt_index.strftime("%Y%m%d").tolist()
+    dt_list = [dt_index.yesterday("%Y%m%d")]
     for date in dt_list:
         # db 에 저장되어있는 publication 정보를 가져오는 코드
         try:
@@ -160,11 +160,11 @@ def New_familt_DB():
                 , database='test'
             )
             cur = conn.cursor()
-            for row in family_all_list:
-                sql_1 = "INSERT INTO family_info_test_1 VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s);"
-                val = row
-                cur.execute(sql_1, val)
-                conn.commit()
+            
+            sql_1 = "INSERT INTO family_info_test_1 VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s);"
+            val = tuple(family_all_list)
+            cur.execute(sql_1, val)
+            conn.commit()
         except Exception as ex:
             print(ex,"DB insert 문제")
         finally:
@@ -178,13 +178,13 @@ default_dag_args = {
     "start_date": datetime(today.year, today.month, today.day, tzinfo=local_tz) - timedelta(hours=25)
 }
 dag = DAG(
-    dag_id='New_familt_DB'
+    dag_id='New_family_DB'
     , default_args=default_dag_args
     , schedule_interval='0 9 * * *'
     # , schedule_interval=timedelta(1)
 )
 task1 = PythonOperator(
-    task_id='New_familt_DB'
+    task_id='New_family_DB'
     , python_callable=New_familt_DB
     , dag=dag
 )
