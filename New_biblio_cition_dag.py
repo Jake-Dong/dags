@@ -51,7 +51,7 @@ def bibio_citaion_DB():
     country_list = []
     kind_list = []
     family_id_list = []
-    for data in datas[:5]:
+    for data in datas:
         family_id = data[0]
         pub_country = data[1]
         pub_number = data[2]
